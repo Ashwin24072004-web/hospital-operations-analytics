@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:15.3-bookworm
+    container_name: hospital-analytics-db
+    environment:
+      POSTGRES_DB: hospital_analytics
+      POSTGRES_USER: hospital_user
+      POSTGRES_PASSWORD: hospital_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - hospital_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hospital_user -d hospital_analytics"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  hospital_postgres_data:

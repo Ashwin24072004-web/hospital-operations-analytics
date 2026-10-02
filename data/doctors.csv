@@ -1,0 +1,36 @@
+doctor_id,doctor_name,specialization,department_id,hire_date
+1,Dr. Arjun Bansal,Cardiologist,1,2023-04-26
+2,Dr. Meera Khan,Dermatologist,2,2017-07-03
+3,Dr. Diya Gupta,General Physician,3,2022-08-03
+4,Dr. Vihaan Das,Neurologist,4,2021-08-15
+5,Dr. Riya Chopra,Orthopedic Surgeon,5,2015-05-03
+6,Dr. Ananya Kapoor,Pediatrician,6,2017-08-10
+7,Dr. Sara Bansal,ENT Specialist,7,2021-04-17
+8,Dr. Kabir Yadav,Ophthalmologist,8,2019-09-15
+9,Dr. Kavya Sharma,Cardiologist,1,2021-08-10
+10,Dr. Meera Bansal,Dermatologist,2,2023-07-06
+11,Dr. Ishaan Shah,General Physician,3,2018-10-25
+12,Dr. Meera Iyer,Neurologist,4,2017-05-31
+13,Dr. Nikhil Gupta,Orthopedic Surgeon,5,2016-01-15
+14,Dr. Rahul Gupta,Pediatrician,6,2019-01-10
+15,Dr. Priya Malhotra,ENT Specialist,7,2015-06-27
+16,Dr. Rohan Yadav,Ophthalmologist,8,2016-05-26
+17,Dr. Rahul Das,Cardiologist,1,2021-03-11
+18,Dr. Neha Patel,Dermatologist,2,2021-06-22
+19,Dr. Kabir Das,General Physician,3,2015-07-07
+20,Dr. Kavya Mehta,Neurologist,4,2015-11-23
+21,Dr. Kavya Gupta,Orthopedic Surgeon,5,2019-04-06
+22,Dr. Meera Sharma,Pediatrician,6,2022-02-16
+23,Dr. Priya Jain,ENT Specialist,7,2019-02-25
+24,Dr. Priya Kapoor,Ophthalmologist,8,2022-07-08
+25,Dr. Meera Das,Cardiologist,1,2021-10-31
+26,Dr. Ishaan Yadav,Dermatologist,2,2023-03-06
+27,Dr. Kavya Jain,General Physician,3,2020-03-08
+28,Dr. Rahul Malhotra,Neurologist,4,2022-03-06
+29,Dr. Vihaan Khan,Orthopedic Surgeon,5,2022-09-05
+30,Dr. Nikhil Chopra,Pediatrician,6,2017-07-27
+31,Dr. Aditi Nair,ENT Specialist,7,2019-07-02
+32,Dr. Meera Das,Ophthalmologist,8,2017-05-14
+33,Dr. Vikram Nair,Cardiologist,1,2017-05-20
+34,Dr. Saanvi Rao,Dermatologist,2,2022-03-18
+35,Dr. Rohan Iyer,General Physician,3,2017-12-20

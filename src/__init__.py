@@ -1,0 +1,2 @@
+"""Hospital analytics application package."""
+

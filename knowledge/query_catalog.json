@@ -1,0 +1,143 @@
+[
+  {
+    "query_id": "total_patients",
+    "title": "Total patients",
+    "question": "How many patients are registered?",
+    "sql_file": "total_patients.sql",
+    "entities": ["patients"],
+    "join_type": "None",
+    "explanation": "Counts all fictional patient records.",
+    "keywords": ["patient count", "registered patients", "patients"]
+  },
+  {
+    "query_id": "total_doctors",
+    "title": "Total doctors",
+    "question": "How many doctors work at the hospital?",
+    "sql_file": "total_doctors.sql",
+    "entities": ["doctors"],
+    "join_type": "None",
+    "explanation": "Counts all doctor records.",
+    "keywords": ["doctor count", "doctors", "staff"]
+  },
+  {
+    "query_id": "total_appointments",
+    "title": "Appointments in period",
+    "question": "How many appointments occurred in the selected period?",
+    "sql_file": "total_appointments.sql",
+    "entities": ["appointments"],
+    "join_type": "None",
+    "explanation": "Counts appointments whose dates fall inside the selected range.",
+    "keywords": ["appointment count", "visits", "date range"]
+  },
+  {
+    "query_id": "total_revenue",
+    "title": "Collected revenue",
+    "question": "How much treatment revenue was collected in the selected period?",
+    "sql_file": "total_revenue.sql",
+    "entities": ["payments", "treatments", "appointments"],
+    "join_type": "INNER JOIN",
+    "explanation": "Connects payments to treatments and their appointments before summing paid amounts.",
+    "keywords": ["revenue", "payments", "income", "amount paid"]
+  },
+  {
+    "query_id": "monthly_appointments",
+    "title": "Monthly appointment trend",
+    "question": "How does appointment volume change by month?",
+    "sql_file": "monthly_appointments.sql",
+    "entities": ["appointments"],
+    "join_type": "None",
+    "explanation": "Groups appointments by calendar month.",
+    "keywords": ["monthly trend", "appointments over time", "volume"]
+  },
+  {
+    "query_id": "appointment_status",
+    "title": "Appointment status breakdown",
+    "question": "How many appointments were completed, scheduled, cancelled, or missed?",
+    "sql_file": "appointment_status.sql",
+    "entities": ["appointments"],
+    "join_type": "None",
+    "explanation": "Groups appointments by their current status.",
+    "keywords": ["status", "cancelled", "no-show", "completed"]
+  },
+  {
+    "query_id": "department_activity",
+    "title": "Appointments by department",
+    "question": "Which departments handle the most appointments?",
+    "sql_file": "department_activity.sql",
+    "entities": ["departments", "doctors", "appointments"],
+    "join_type": "LEFT JOIN",
+    "explanation": "Keeps every department visible even when it has no matching appointment.",
+    "keywords": ["department", "appointments by department", "busy department"]
+  },
+  {
+    "query_id": "recent_appointments",
+    "title": "Recent appointments",
+    "question": "What are the most recent appointments and who handled them?",
+    "sql_file": "recent_appointments.sql",
+    "entities": ["appointments", "patients", "doctors", "departments"],
+    "join_type": "INNER JOIN",
+    "explanation": "Combines matching appointment, patient, doctor, and department records.",
+    "keywords": ["recent appointments", "patient visit", "doctor"]
+  },
+  {
+    "query_id": "department_summary",
+    "title": "Department performance",
+    "question": "How do departments compare on workload, no-shows, and revenue?",
+    "sql_file": "department_summary.sql",
+    "entities": ["departments", "doctors", "appointments", "treatments", "payments"],
+    "join_type": "LEFT JOIN",
+    "explanation": "Preserves departments and doctors even when appointments, treatments, or payments are missing.",
+    "keywords": ["department performance", "no-show", "department revenue"]
+  },
+  {
+    "query_id": "doctor_summary",
+    "title": "Doctor workload",
+    "question": "How many appointments and unique patients does each doctor handle?",
+    "sql_file": "doctor_summary.sql",
+    "entities": ["doctors", "departments", "appointments", "treatments", "payments"],
+    "join_type": "INNER JOIN and LEFT JOIN",
+    "explanation": "Matches every doctor to a department while keeping doctors who have no visits in the period.",
+    "keywords": ["doctor workload", "unique patients", "doctor revenue"]
+  },
+  {
+    "query_id": "patient_summary",
+    "title": "Patient activity",
+    "question": "Which patients visited the hospital and what did their treatment cost?",
+    "sql_file": "patient_summary.sql",
+    "entities": ["patients", "appointments", "treatments"],
+    "join_type": "LEFT JOIN",
+    "explanation": "Keeps registered patients in the result even when they have no appointments.",
+    "keywords": ["patient activity", "patient visits", "treatment cost"]
+  },
+  {
+    "query_id": "patient_history",
+    "title": "Patient visit history",
+    "question": "What appointments, doctors, treatments, and payments belong to a patient?",
+    "sql_file": "patient_history.sql",
+    "entities": ["appointments", "doctors", "departments", "treatments", "payments"],
+    "join_type": "INNER JOIN and LEFT JOIN",
+    "explanation": "Combines required visit details and retains visits without optional treatment or payment records.",
+    "keywords": ["patient history", "visit history", "treatments", "payments"]
+  },
+  {
+    "query_id": "unpaid_treatments",
+    "title": "Outstanding treatments",
+    "question": "Which treatments are pending or only partially paid?",
+    "sql_file": "unpaid_treatments.sql",
+    "entities": ["treatments", "appointments", "patients", "payments"],
+    "join_type": "INNER JOIN and LEFT JOIN",
+    "explanation": "Links treatment owners while retaining a treatment that has no payment row.",
+    "keywords": ["unpaid", "pending payment", "outstanding", "partially paid"]
+  },
+  {
+    "query_id": "patients_without_appointments",
+    "title": "Patients without appointments",
+    "question": "Which registered patients have never booked an appointment?",
+    "sql_file": "patients_without_appointments.sql",
+    "entities": ["patients", "appointments"],
+    "join_type": "LEFT JOIN",
+    "explanation": "Keeps all patients, then selects rows for which no appointment matched.",
+    "keywords": ["no appointments", "inactive patients", "never visited"]
+  }
+]
+
