@@ -55,7 +55,7 @@ def random_date(rng: random.Random, start: date, end: date) -> date:
 def write_csv(filename: str, headers: list[str], rows: list[tuple]) -> None:
     DATA_DIR.mkdir(exist_ok=True)
     with (DATA_DIR / filename).open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(headers)
         writer.writerows(rows)
 
@@ -187,4 +187,3 @@ if __name__ == "__main__":
     print("Generated deterministic synthetic data:")
     for table, count in counts.items():
         print(f"  {table}: {count:,}")
-

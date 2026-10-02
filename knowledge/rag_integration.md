@@ -1,6 +1,6 @@
 # Future RAG integration contract
 
-The current application does not call an AI model. It prepares a safe, stable boundary for one.
+The optional AI Assistant calls Groq through its OpenAI-compatible endpoint. The normal dashboard remains usable without an API key.
 
 ## Trusted retrieval sources
 
@@ -11,8 +11,8 @@ The current application does not call an AI model. It prepares a safe, stable bo
 
 ## Recommended chatbot flow
 
-1. Retrieve relevant glossary and query-catalog entries for the user's question.
-2. Select an existing `query_id`; do not let the model write arbitrary SQL in the first version.
+1. Rank relevant glossary and query-catalog entries locally using weighted lexical matching.
+2. Let Groq select only among the five retrieved `query_id` values using strict structured output; never let the model write SQL.
 3. Validate required filters such as date range, department, doctor, or patient.
 4. Execute through `src.analytics.report()` or `src.analytics.metric()` using parameters.
 5. Give the returned rows to the model as structured context.
@@ -26,4 +26,4 @@ The current application does not call an AI model. It prepares a safe, stable bo
 - Limit returned rows before sending context to a model.
 - Never place database credentials or sensitive rows in prompts or logs.
 
-This design supports later use with LangChain, LlamaIndex, or a small custom retrieval layer without coupling the analytics application to one framework today.
+The implementation deliberately avoids LangChain, LlamaIndex, embeddings, and a vector database. The small trusted corpus does not require them yet.

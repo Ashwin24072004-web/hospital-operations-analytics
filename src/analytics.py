@@ -33,3 +33,28 @@ def filter_options() -> dict[str, pd.DataFrame]:
             "SELECT MIN(appointment_date) AS min_date, MAX(appointment_date) AS max_date FROM appointments"
         ),
     }
+
+
+def patient_candidates(search: str, limit: int = 10) -> pd.DataFrame:
+    """Find fictional patients for chatbot filter resolution."""
+    if search.isdigit():
+        return fetch_dataframe(
+            """
+            SELECT patient_id, patient_name, city
+            FROM patients
+            WHERE patient_id = %(patient_id)s
+            ORDER BY patient_id
+            LIMIT %(limit)s
+            """,
+            {"patient_id": int(search), "limit": limit},
+        )
+    return fetch_dataframe(
+        """
+        SELECT patient_id, patient_name, city
+        FROM patients
+        WHERE LOWER(patient_name) LIKE LOWER(%(patient_pattern)s)
+        ORDER BY patient_name, patient_id
+        LIMIT %(limit)s
+        """,
+        {"patient_pattern": f"%{search}%", "limit": limit},
+    )

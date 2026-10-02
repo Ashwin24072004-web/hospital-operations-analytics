@@ -10,6 +10,9 @@ def test_every_catalog_entry_has_a_select_query():
         sql = definition.sql.strip().upper()
         assert sql.startswith("SELECT")
         assert not any(word in sql for word in [" UPDATE ", " DELETE ", " INSERT ", " DROP "])
+        assert definition.result_description
+        assert 1 <= definition.safe_prompt_row_limit <= 25
+        assert definition.answer_format
 
 
 def test_query_ids_are_stable_and_unique():
@@ -17,4 +20,3 @@ def test_query_ids_are_stable_and_unique():
     assert len(catalog) == len(set(catalog))
     assert "department_activity" in catalog
     assert catalog["department_activity"].join_type == "LEFT JOIN"
-

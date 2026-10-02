@@ -19,6 +19,11 @@ class QueryDefinition:
     join_type: str
     explanation: str
     keywords: tuple[str, ...]
+    required_filters: tuple[str, ...]
+    optional_filters: tuple[str, ...]
+    result_description: str
+    safe_prompt_row_limit: int
+    answer_format: str
 
     @property
     def sql(self) -> str:
@@ -39,6 +44,11 @@ def load_catalog() -> dict[str, QueryDefinition]:
             join_type=item["join_type"],
             explanation=item["explanation"],
             keywords=tuple(item["keywords"]),
+            required_filters=tuple(item.get("required_filters", [])),
+            optional_filters=tuple(item.get("optional_filters", [])),
+            result_description=item.get("result_description", item["question"]),
+            safe_prompt_row_limit=int(item.get("safe_prompt_row_limit", 25)),
+            answer_format=item.get("answer_format", "Summarize the result concisely."),
         )
         for item in raw
     }
@@ -49,4 +59,3 @@ def get_query(query_id: str) -> QueryDefinition:
         return load_catalog()[query_id]
     except KeyError as exc:
         raise KeyError(f"Unknown trusted query: {query_id}") from exc
-

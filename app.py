@@ -5,6 +5,8 @@ import psycopg
 import streamlit as st
 
 from src.analytics import filter_options, metric, report
+from src.chatbot import ChatResult, ChatbotError, answer_question
+from src.config import groq_api_key
 from src.query_catalog import get_query, load_catalog
 
 
@@ -190,6 +192,120 @@ def render_sql_showcase(start_date: date, end_date: date) -> None:
     st.dataframe(result, width="stretch", hide_index=True)
 
 
+def _render_chat_result(result: dict) -> None:
+    st.markdown(result["answer"])
+    details = []
+    if result.get("source_title"):
+        details.append(f"Source: {result['source_title']}")
+    if result.get("model_used"):
+        details.append(f"Model: {result['model_used']}")
+    if details:
+        st.caption(" · ".join(details))
+    if result.get("source_title"):
+        with st.expander("Trusted source"):
+            st.write(f"**Source:** {result['source_title']}")
+            if result.get("filters"):
+                st.write("**Filters:**")
+                st.json(result["filters"])
+            if result.get("query_id"):
+                query = get_query(result["query_id"])
+                st.write(f"**Query ID:** `{query.query_id}`")
+                st.write(f"**SQL approach:** {query.join_type} — {query.explanation}")
+            if result.get("row_count"):
+                st.write(f"**Matching rows:** {result['row_count']}")
+    if result.get("rows"):
+        with st.expander("View result data"):
+            st.dataframe(pd.DataFrame(result["rows"]), width="stretch", hide_index=True)
+
+
+def render_ai_assistant(start_date: date, end_date: date) -> None:
+    st.header("AI Assistant")
+    st.caption(
+        "Ask about the synthetic hospital reports or metric definitions. "
+        "The assistant can only run reviewed, read-only SQL queries."
+    )
+    st.info("Educational demo: every patient and event is fictional. Do not use this assistant for medical advice.")
+
+    if not groq_api_key():
+        st.warning("The AI Assistant needs a newly generated Groq API key. Other dashboard pages still work normally.")
+        st.code(
+            "GROQ_API_KEY=replace_with_your_rotated_key\n"
+            "GROQ_PRIMARY_MODEL=openai/gpt-oss-120b\n"
+            "GROQ_FALLBACK_MODEL=openai/gpt-oss-20b",
+            language="text",
+        )
+        st.caption("Add these values to `.env`, then restart Streamlit. Never commit `.env`.")
+        return
+
+    if "chat_messages" not in st.session_state:
+        st.session_state.chat_messages = []
+
+    top_left, top_right = st.columns([4, 1])
+    with top_left:
+        st.caption(f"Active date range: {start_date.isoformat()} to {end_date.isoformat()}")
+    with top_right:
+        if st.button("Clear conversation", width="stretch"):
+            st.session_state.chat_messages = []
+            st.rerun()
+
+    suggested_prompt = None
+    if not st.session_state.chat_messages:
+        st.write("**Try an example:**")
+        suggestions = [
+            "Which department has the most appointments?",
+            "How many appointments were no-shows?",
+            "Compare doctor workloads.",
+            "What does collected revenue mean?",
+        ]
+        suggestion_columns = st.columns(2)
+        for index, suggestion in enumerate(suggestions):
+            with suggestion_columns[index % 2]:
+                if st.button(suggestion, key=f"suggestion_{index}", width="stretch"):
+                    suggested_prompt = suggestion
+
+    for message in st.session_state.chat_messages:
+        with st.chat_message(message["role"]):
+            if message["role"] == "assistant" and message.get("result"):
+                _render_chat_result(message["result"])
+            else:
+                st.markdown(message["content"])
+
+    typed_prompt = st.chat_input("Ask about hospital operations...")
+    prompt = suggested_prompt or typed_prompt
+    if not prompt:
+        return
+
+    previous_conversation = [
+        {"role": item["role"], "content": item["content"]}
+        for item in st.session_state.chat_messages[-6:]
+    ]
+    st.session_state.chat_messages.append({"role": "user", "content": prompt})
+    try:
+        with st.spinner("Checking trusted reports..."):
+            result = answer_question(
+                prompt,
+                start_date,
+                end_date,
+                previous_conversation,
+            )
+    except ChatbotError as error:
+        result = ChatResult(
+            answer=str(error),
+            intent="error",
+            query_id=None,
+            source_title="Groq service",
+            filters={},
+            rows=[],
+            row_count=0,
+            model_used="",
+            needs_clarification=False,
+        )
+    st.session_state.chat_messages.append(
+        {"role": "assistant", "content": result.answer, "result": result.to_dict()}
+    )
+    st.rerun()
+
+
 def main() -> None:
     st.title("🏥 Hospital Operations Analytics")
     st.caption("PostgreSQL + joins + Streamlit · 100% synthetic portfolio data")
@@ -197,7 +313,7 @@ def main() -> None:
         options = cached_options()
     except psycopg.OperationalError:
         st.error("Cannot connect to PostgreSQL. Start Docker and load the database using the README instructions.")
-        st.code("docker --context default compose up -d\npython scripts/generate_data.py\npython scripts/setup_database.py")
+        st.code("docker compose up -d --wait\npython scripts/generate_data.py\npython scripts/setup_database.py")
         st.stop()
 
     date_row = options["dates"].iloc[0]
@@ -208,7 +324,7 @@ def main() -> None:
         st.header("Controls")
         page = st.radio(
             "Page",
-            ["Overview", "Departments", "Doctors", "Patients", "SQL showcase"],
+            ["Overview", "Departments", "Doctors", "Patients", "SQL showcase", "AI Assistant"],
         )
         selected_dates = st.date_input(
             "Appointment date range",
@@ -233,6 +349,7 @@ def main() -> None:
         "Doctors": lambda: render_doctors(start_date, end_date, options),
         "Patients": lambda: render_patients(start_date, end_date, options),
         "SQL showcase": lambda: render_sql_showcase(start_date, end_date),
+        "AI Assistant": lambda: render_ai_assistant(start_date, end_date),
     }
     renderers[page]()
 

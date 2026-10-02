@@ -7,7 +7,12 @@
     "entities": ["patients"],
     "join_type": "None",
     "explanation": "Counts all fictional patient records.",
-    "keywords": ["patient count", "registered patients", "patients"]
+    "keywords": ["patient count", "registered patients", "patients"],
+    "required_filters": [],
+    "optional_filters": [],
+    "result_description": "One total count of registered fictional patients.",
+    "safe_prompt_row_limit": 1,
+    "answer_format": "State the total patient count."
   },
   {
     "query_id": "total_doctors",
@@ -17,7 +22,12 @@
     "entities": ["doctors"],
     "join_type": "None",
     "explanation": "Counts all doctor records.",
-    "keywords": ["doctor count", "doctors", "staff"]
+    "keywords": ["doctor count", "doctors", "staff"],
+    "required_filters": [],
+    "optional_filters": [],
+    "result_description": "One total count of doctors.",
+    "safe_prompt_row_limit": 1,
+    "answer_format": "State the total doctor count."
   },
   {
     "query_id": "total_appointments",
@@ -27,7 +37,12 @@
     "entities": ["appointments"],
     "join_type": "None",
     "explanation": "Counts appointments whose dates fall inside the selected range.",
-    "keywords": ["appointment count", "visits", "date range"]
+    "keywords": ["appointment count", "visits", "date range"],
+    "required_filters": [],
+    "optional_filters": ["start_date", "end_date"],
+    "result_description": "One appointment count for the selected date range.",
+    "safe_prompt_row_limit": 1,
+    "answer_format": "State the appointment count and date range."
   },
   {
     "query_id": "total_revenue",
@@ -37,7 +52,12 @@
     "entities": ["payments", "treatments", "appointments"],
     "join_type": "INNER JOIN",
     "explanation": "Connects payments to treatments and their appointments before summing paid amounts.",
-    "keywords": ["revenue", "payments", "income", "amount paid"]
+    "keywords": ["revenue", "payments", "income", "amount paid"],
+    "required_filters": [],
+    "optional_filters": ["start_date", "end_date"],
+    "result_description": "One sum of collected payment amounts for the selected date range.",
+    "safe_prompt_row_limit": 1,
+    "answer_format": "State collected revenue in Indian rupees and the date range."
   },
   {
     "query_id": "monthly_appointments",
@@ -47,7 +67,12 @@
     "entities": ["appointments"],
     "join_type": "None",
     "explanation": "Groups appointments by calendar month.",
-    "keywords": ["monthly trend", "appointments over time", "volume"]
+    "keywords": ["monthly trend", "appointments over time", "volume"],
+    "required_filters": [],
+    "optional_filters": ["start_date", "end_date"],
+    "result_description": "Monthly appointment counts ordered chronologically.",
+    "safe_prompt_row_limit": 25,
+    "answer_format": "Describe the overall trend and identify the highest and lowest visible months."
   },
   {
     "query_id": "appointment_status",
@@ -57,7 +82,12 @@
     "entities": ["appointments"],
     "join_type": "None",
     "explanation": "Groups appointments by their current status.",
-    "keywords": ["status", "cancelled", "no-show", "completed"]
+    "keywords": ["status", "cancelled", "no-show", "completed"],
+    "required_filters": [],
+    "optional_filters": ["start_date", "end_date"],
+    "result_description": "Appointment counts grouped by status.",
+    "safe_prompt_row_limit": 10,
+    "answer_format": "Compare the status counts and highlight the requested status."
   },
   {
     "query_id": "department_activity",
@@ -67,7 +97,12 @@
     "entities": ["departments", "doctors", "appointments"],
     "join_type": "LEFT JOIN",
     "explanation": "Keeps every department visible even when it has no matching appointment.",
-    "keywords": ["department", "appointments by department", "busy department"]
+    "keywords": ["department", "appointments by department", "busy department"],
+    "required_filters": [],
+    "optional_filters": ["start_date", "end_date"],
+    "result_description": "Appointment counts for every department.",
+    "safe_prompt_row_limit": 10,
+    "answer_format": "Rank departments by appointment count and identify the busiest."
   },
   {
     "query_id": "recent_appointments",
@@ -77,7 +112,12 @@
     "entities": ["appointments", "patients", "doctors", "departments"],
     "join_type": "INNER JOIN",
     "explanation": "Combines matching appointment, patient, doctor, and department records.",
-    "keywords": ["recent appointments", "patient visit", "doctor"]
+    "keywords": ["recent appointments", "patient visit", "doctor"],
+    "required_filters": [],
+    "optional_filters": ["start_date", "end_date"],
+    "result_description": "The 20 most recent appointments in the selected period.",
+    "safe_prompt_row_limit": 20,
+    "answer_format": "Summarize recent activity without inventing details."
   },
   {
     "query_id": "department_summary",
@@ -87,7 +127,12 @@
     "entities": ["departments", "doctors", "appointments", "treatments", "payments"],
     "join_type": "LEFT JOIN",
     "explanation": "Preserves departments and doctors even when appointments, treatments, or payments are missing.",
-    "keywords": ["department performance", "no-show", "department revenue"]
+    "keywords": ["department performance", "no-show", "department revenue"],
+    "required_filters": [],
+    "optional_filters": ["start_date", "end_date", "department"],
+    "result_description": "Department workload, completion, no-show, doctor, and revenue measures.",
+    "safe_prompt_row_limit": 10,
+    "answer_format": "Compare department workload, no-shows, and collected revenue."
   },
   {
     "query_id": "doctor_summary",
@@ -97,7 +142,12 @@
     "entities": ["doctors", "departments", "appointments", "treatments", "payments"],
     "join_type": "INNER JOIN and LEFT JOIN",
     "explanation": "Matches every doctor to a department while keeping doctors who have no visits in the period.",
-    "keywords": ["doctor workload", "unique patients", "doctor revenue"]
+    "keywords": ["doctor workload", "unique patients", "doctor revenue"],
+    "required_filters": [],
+    "optional_filters": ["start_date", "end_date", "department", "doctor"],
+    "result_description": "Doctor workload, unique-patient, completion, and revenue measures.",
+    "safe_prompt_row_limit": 25,
+    "answer_format": "Compare doctors and identify relevant workload differences."
   },
   {
     "query_id": "patient_summary",
@@ -107,7 +157,12 @@
     "entities": ["patients", "appointments", "treatments"],
     "join_type": "LEFT JOIN",
     "explanation": "Keeps registered patients in the result even when they have no appointments.",
-    "keywords": ["patient activity", "patient visits", "treatment cost"]
+    "keywords": ["patient activity", "patient visits", "treatment cost"],
+    "required_filters": [],
+    "optional_filters": ["start_date", "end_date", "city", "patient_search"],
+    "result_description": "Patient appointment counts and treatment charges, optionally filtered by city or name.",
+    "safe_prompt_row_limit": 25,
+    "answer_format": "Summarize the matching patient activity without medical interpretation."
   },
   {
     "query_id": "patient_history",
@@ -117,7 +172,12 @@
     "entities": ["appointments", "doctors", "departments", "treatments", "payments"],
     "join_type": "INNER JOIN and LEFT JOIN",
     "explanation": "Combines required visit details and retains visits without optional treatment or payment records.",
-    "keywords": ["patient history", "visit history", "treatments", "payments"]
+    "keywords": ["patient history", "visit history", "treatments", "payments"],
+    "required_filters": ["patient"],
+    "optional_filters": ["start_date", "end_date"],
+    "result_description": "Appointment, doctor, treatment, and payment history for one patient.",
+    "safe_prompt_row_limit": 25,
+    "answer_format": "Summarize the selected fictional patient's recorded history without giving medical advice."
   },
   {
     "query_id": "unpaid_treatments",
@@ -127,7 +187,12 @@
     "entities": ["treatments", "appointments", "patients", "payments"],
     "join_type": "INNER JOIN and LEFT JOIN",
     "explanation": "Links treatment owners while retaining a treatment that has no payment row.",
-    "keywords": ["unpaid", "pending payment", "outstanding", "partially paid"]
+    "keywords": ["unpaid", "pending payment", "outstanding", "partially paid"],
+    "required_filters": [],
+    "optional_filters": ["start_date", "end_date"],
+    "result_description": "Treatments with missing, pending, or partial payment records.",
+    "safe_prompt_row_limit": 25,
+    "answer_format": "State the number of outstanding rows and summarize the visible examples."
   },
   {
     "query_id": "patients_without_appointments",
@@ -137,7 +202,11 @@
     "entities": ["patients", "appointments"],
     "join_type": "LEFT JOIN",
     "explanation": "Keeps all patients, then selects rows for which no appointment matched.",
-    "keywords": ["no appointments", "inactive patients", "never visited"]
+    "keywords": ["no appointments", "inactive patients", "never visited"],
+    "required_filters": [],
+    "optional_filters": [],
+    "result_description": "Registered patients who have no appointment record.",
+    "safe_prompt_row_limit": 25,
+    "answer_format": "State how many patients have no appointments and summarize only visible examples."
   }
 ]
-
